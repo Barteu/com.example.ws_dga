@@ -12,6 +12,7 @@ import com.example.Client
 import com.example.joinGame
 import com.example.reconnect
 import com.example.throwDice
+import com.example.usePawn
 
 
 fun Application.configureSockets() {
@@ -34,6 +35,7 @@ fun Application.configureSockets() {
                             0 -> joinGame(client, bytes)
                             1 -> reconnect(client, bytes)
                             2 -> throwDice(bytes)
+                            6 -> usePawn(client, bytes)
                         }
                     }
                     else -> {
