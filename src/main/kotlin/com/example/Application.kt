@@ -6,8 +6,6 @@ import com.example.plugins.*
 
 fun main() {
     embeddedServer(Netty, port = 8888, host = "127.0.0.1") {
-        //configureRouting()
         configureSockets()
-        //configureSecurity()
     }.start(wait = true)
 }

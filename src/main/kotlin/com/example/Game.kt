@@ -4,6 +4,7 @@ import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.collections.HashMap
 
+val games: MutableMap<Int, Game> = Collections.synchronizedMap(HashMap())
 
 class Game(var client1: Client, var client2: Client) {
     companion object {
@@ -47,14 +48,6 @@ class Game(var client1: Client, var client2: Client) {
         }
     }
 
-
 }
 
-val games: MutableMap<Int, Game> = Collections.synchronizedMap(HashMap())
 
-
-//data class Game(var client0: Client, var client1: Client, val id: Int)
-//fun getLowestAvailableGameId(): Int {
-//    for (id in 0..255) if (!games.containsKey(id)) return id
-//    throw IllegalStateException("Game count limit reached")
-//}

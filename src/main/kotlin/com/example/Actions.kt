@@ -5,14 +5,9 @@ import kotlin.random.Random
 
 suspend fun joinGame(client: Client, bytes: ByteArray) {
     clientsInQueue += client
-
-    //log("Processing join game message. (Pokemon IDs: ${player.pokemonIDs})")
-
     var game: Game? = null
     synchronized(clientsInQueue) {
         if (clientsInQueue.size == 2) {
-            //val newGameId = getLowestAvailableGameId()
-            //log("Creating game. (Game ID: $newGameId)")
             game = Game(clientsInQueue.first(), clientsInQueue.last())
             clientsInQueue.clear()
             games[game!!.id] = game!!
@@ -29,7 +24,7 @@ suspend fun joinGame(client: Client, bytes: ByteArray) {
             }
         }
     }
-    game?.let { sendGameStartMssg(it) }
+    game?.let { sendGameStartedMssg(it) }
 }
 
 
@@ -48,7 +43,7 @@ fun reconnect(client: Client, bytes: ByteArray) {
 }
 
 
-suspend fun throwDice(bytes: ByteArray){
+suspend fun rollDice(bytes: ByteArray){
 
     val result = Random.nextInt(1, 7)
 
@@ -78,7 +73,7 @@ suspend fun throwDice(bytes: ByteArray){
 }
 
 
-suspend fun sendGameStartMssg(game: Game) {
+suspend fun sendGameStartedMssg(game: Game) {
     // 4, GameID, clientNumber, hasTurn
     val message1 = byteArrayOf(0x04, game.id.toByte(), 1.toByte(), 1.toByte())
     val message2 = byteArrayOf(0x04, game.id.toByte(), 2.toByte(), 0.toByte())
@@ -89,7 +84,7 @@ suspend fun sendGameStartMssg(game: Game) {
     game.client2.session.send(Frame.Binary(true, message2))
 }
 
-suspend fun usePawn(client: Client, bytes: ByteArray){
+suspend fun movePawn(client: Client, bytes: ByteArray){
 
     val gameId = bytes[1].toInt()
     val game = games[gameId]
@@ -160,7 +155,6 @@ suspend fun usePawn(client: Client, bytes: ByteArray){
         }
 
 
-
     val message = byteArrayOf(0x07,
                               game.c1pawnsPos[0],
                               game.c1pawnsPos[1],
@@ -190,5 +184,4 @@ suspend fun usePawn(client: Client, bytes: ByteArray){
         game.client2.session.send(Frame.Binary(true, byteArrayOf(0x08)))
         println("Now its client2 turn")
     }
-
 }
